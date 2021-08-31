@@ -90,7 +90,7 @@ function font_style_generator(
 		fontFamily += 'Italic'
 	}
 
-	return {fontFamily: fontFamily, fontWeight: 'normal'}
+	return  { ...font_family && {fontFamily: fontFamily}, fontWeight: 'normal' };
 }
 
 const oldRender = (Text as any).render
@@ -116,7 +116,7 @@ class FontManager {
 				// HACK: Disabled mutation of fontStyle as is immutable in some libaries
 				// origin.props.style.fontStyle = 'normal'
 
-				const fontFamily: string = origin.props.style.fontFamily ? origin.props.style.fontFamily : 'Roboto'
+				const fontFamily: string = origin.props.style.fontFamily
 
 				return React.cloneElement(origin, {
 					style: [{}, origin.props.style, font_style_generator(fontFamily, fontWeight, fontStyle)],
