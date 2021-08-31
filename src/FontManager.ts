@@ -41,7 +41,7 @@ function font_style_generator(
 	font_family: string,
 	font_weight: FontWeight,
 	font_style: FontStyle,
-): {fontFamily: string; fontWeight: string} {
+): {fontFamily: string?; fontWeight: string} {
 	let fontFamily = `${font_family}-`
 
 	switch (font_weight) {
