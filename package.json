@@ -5,12 +5,6 @@
   "author": "aelesia",
   "license": "MIT",
   "repository": "https://github.com/siliconjungles/react-native-fontweight",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "prepublish": "tsc",
-    "postinstall": "npm run prepublish"
-  },
   "peerDependencies": {
     "react": "^16.0.0",
     "react-native": "^0.60.0"
