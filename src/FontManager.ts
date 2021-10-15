@@ -1,4 +1,4 @@
-import {Platform, Text} from 'react-native'
+import {Platform, StyleSheet, Text} from 'react-native'
 import React from 'react'
 
 type FontStyle = 'normal' | 'italic' | 'oblique'
@@ -96,11 +96,14 @@ function font_style_generator(
 const oldRender = (Text as any).render
 
 class FontManager {
-	init() {
+	customFonts: string [] = []
+
+	init = (...customFonts: string[]) => {
 		(Text as any).render = this.override
+		this.customFonts = customFonts
 	}
 
-	override(...args) {
+	override = (...args) => {
 		/* FIXME: Determine if this was the correct thing to do
      *   Original code  ->  const origin = oldRender.call(this, ...args);
      *   Used to contain error 'the containing arrow function captures the global'
@@ -110,24 +113,32 @@ class FontManager {
 
 		if (Platform.OS === 'android') {
 			if (origin.props.style) {
-				const fontWeight: FontWeight = origin.props.style.fontWeight ? origin.props.style.fontWeight : '400'
+				const style = StyleSheet.flatten([origin.props.style])
 
-				const fontStyle: FontStyle = origin.props.style.fontStyle ? origin.props.style.fontStyle : 'normal'
+				if(!this.customFonts?.includes(style.fontFamily)){
+					return origin
+				}
+
+				const fontWeight: FontWeight = style.fontWeight ? style.fontWeight : '400'
+
+				const fontStyle: FontStyle = style.fontStyle ? style.fontStyle : 'normal'
 				// HACK: Disabled mutation of fontStyle as is immutable in some libaries
 				// origin.props.style.fontStyle = 'normal'
 
-				const fontFamily: string = origin.props.style.fontFamily
+				const fontFamily: string = style.fontFamily
 
 				return React.cloneElement(origin, {
-					style: [{}, origin.props.style, font_style_generator(fontFamily, fontWeight, fontStyle)],
+					style: [{}, style, font_style_generator(fontFamily, fontWeight, fontStyle)],
 				})
 			}
 			return origin
 		} else {
 			if (origin.props.style) {
-				if (origin.props.style.fontFamily) {
-					const fontFamily: string = origin.props.style.fontFamily
-					origin.props.style.fontFamily = double_pascal_case_to_two_words(fontFamily)
+				const style = StyleSheet.flatten([origin.props.style])
+				if (style.fontFamily && this.customFonts?.includes(style.fontFamily)) {
+					const fontFamily: string = style.fontFamily
+					style.fontFamily = double_pascal_case_to_two_words(fontFamily)
+					origin.props.style = style
 				}
 			}
 			return origin
