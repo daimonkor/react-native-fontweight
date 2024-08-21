@@ -6,7 +6,7 @@
   "license": "MIT",
   "repository": "https://github.com/siliconjungles/react-native-fontweight",
   "peerDependencies": {
-    "react": "^16.0.0",
+    "react": "^18.0.0",
     "react-native": "^0.60.0"
   },
   "devDependencies": {
